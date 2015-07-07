@@ -1,2 +1,3 @@
-# artmc
-Artikel Merchant Center
+# Artikel Merchant Center
+
+An Akka Spray setup.
