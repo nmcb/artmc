@@ -1,38 +1,36 @@
 package api
 
-import spray.routing.Directives
-import scala.concurrent.ExecutionContext
 import akka.actor.ActorRef
-import core.{Article, ArticleManager}
 import akka.util.Timeout
-import ArticleManager._
+import core.ArticleManager.{Register, Registered, NotRegistered}
+import core.model.Article
 import spray.http._
-import core.Article
-import core.ArticleManager.Register
-import scala.Some
+import spray.routing.Directives
+
+import scala.concurrent.ExecutionContext
 
 class ArticleService(articles: ActorRef)(implicit executionContext: ExecutionContext)
-  extends Directives with DefaultJsonFormats {
-
-  case class ImageUploaded(size: Int)
+extends Directives with DefaultJsonFormats {
 
   import akka.pattern.ask
+
   import scala.concurrent.duration._
+
   implicit val timeout = Timeout(2.seconds)
 
-  implicit val articleFormat = jsonFormat4(Article)
-  implicit val registerFormat = jsonFormat1(Register)
-  implicit val registeredFormat = jsonFormat3(Registered)
+  implicit val articleFormat       = jsonFormat4(Article)
+  implicit val registerFormat      = jsonFormat1(Register)
+  implicit val registeredFormat    = jsonFormat3(Registered)
   implicit val notRegisteredFormat = jsonFormat2(NotRegistered)
-
-  implicit object EitherErrorSelector extends ErrorSelector[NotRegistered.type] {
-    def apply(v: NotRegistered.type): StatusCode = StatusCodes.BadRequest
-  }
-
   val route =
     path("articles") {
       post {
         handleWith { article: Register => (articles ? article).mapTo[Either[NotRegistered, Registered]] }
       }
     }
+  case class ImageUploaded(size: Int)
+
+  implicit object EitherErrorSelector extends ErrorSelector[NotRegistered.type] {
+    def apply(v: NotRegistered.type): StatusCode = StatusCodes.BadRequest
+  }
 }

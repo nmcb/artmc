@@ -11,8 +11,7 @@ trait BootedCore extends Core {
   sys.addShutdownHook(system.shutdown())
 }
 
-trait CoreActors {this: Core =>
-
-  val articles   = system.actorOf(Props[ArticleManager])
-  val dispatcher = system.actorOf(Props[Dispatcher])
+trait CoreActors {
+  this: Core =>
+  val articles = system.actorOf(Props[ArticleManager])
 }

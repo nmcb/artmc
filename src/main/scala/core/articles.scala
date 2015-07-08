@@ -3,6 +3,7 @@ package core
 import java.util.UUID
 
 import akka.actor.Actor
+import core.model.Article
 
 object ArticleManager {
   val skus = """(\d\d\d\d\d\d\d\d)-(\d\d)""".r
@@ -17,6 +18,6 @@ class ArticleManager extends Actor {
 
   def receive: Receive = {
     case Register(Article(uuid, _, _, skus(id, group))) => sender ! Right(Registered(uuid, group.toInt, id.toInt))
-    case Register(Article(uuid, _, _, invalid))             => sender ! Left(NotRegistered(uuid, invalid))
+    case Register(Article(uuid, _, _, invalid))         => sender ! Left(NotRegistered(uuid, invalid))
   }
 }
