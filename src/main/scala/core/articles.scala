@@ -3,6 +3,7 @@ package core
 import java.util.UUID
 
 import akka.actor.Actor
+import akka.event.LoggingReceive
 import core.model.Article
 
 object ArticleManager {
@@ -16,7 +17,7 @@ class ArticleManager extends Actor {
 
   import ArticleManager._
 
-  def receive: Receive = {
+  def receive: Receive = LoggingReceive {
     case Register(Article(uuid, _, _, skus(id, group))) => sender ! Right(Registered(uuid, group.toInt, id.toInt))
     case Register(Article(uuid, _, _, invalid))         => sender ! Left(NotRegistered(uuid, invalid))
   }

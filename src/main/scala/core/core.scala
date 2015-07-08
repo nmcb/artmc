@@ -13,5 +13,5 @@ trait BootedCore extends Core {
 
 trait CoreActors {
   this: Core =>
-  val articles = system.actorOf(Props[ArticleManager])
+  val articles = system.actorOf(Props[ArticleManager], "articles")
 }
